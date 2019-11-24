@@ -1,4 +1,16 @@
+<<<<<<< HEAD
 require("dotenv").config();
+=======
+require('dotenv').config();
+
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const express = require('express');
+const mongoose = require('mongoose');
+const logger = require('morgan');
+const path = require('path');
+const cors = require('cors');
+>>>>>>> 8a45d4f6c5b51dc9dae0fdc6fc50dca23e61bfd0
 
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -33,21 +45,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// Express View engine setup
-
-app.use(
-  require("node-sass-middleware")({
-    src: path.join(__dirname, "public"),
-    dest: path.join(__dirname, "public"),
-    sourceMap: true
-  })
-);
-
 app.use(
   cors({
-    origin: "http://localhost:3000",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
-  })
+    origin: 'http://localhost:3000',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  }),
 );
 
 app.use(express.static(path.join(__dirname, "public")));
