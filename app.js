@@ -1,21 +1,8 @@
-<<<<<<< HEAD
 require("dotenv").config();
-=======
-require('dotenv').config();
-
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const express = require('express');
-const mongoose = require('mongoose');
-const logger = require('morgan');
-const path = require('path');
-const cors = require('cors');
->>>>>>> 8a45d4f6c5b51dc9dae0fdc6fc50dca23e61bfd0
 
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const express = require("express");
-const favicon = require("serve-favicon");
 const mongoose = require("mongoose");
 const logger = require("morgan");
 const path = require("path");
@@ -47,9 +34,9 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: 'http://localhost:3000',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  }),
+    origin: "http://localhost:3000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
+  })
 );
 
 app.use(express.static(path.join(__dirname, "public")));
