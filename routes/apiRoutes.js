@@ -29,6 +29,6 @@ router.use("/users", userRoutes);
 
 router.use(verifyLoggedAreaToken());
 
-router.use("/", movies);
+router.use("/movies", movies);
 
 module.exports = router;

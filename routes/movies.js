@@ -8,7 +8,7 @@ router.get("/teste", (req, res, next) => {
   res.send("testes");
 });
 
-router.get("/movies", async (req, res) => {
+router.get("/all-movies", async (req, res) => {
   let data = "";
   let details = "";
   const movies = [];
@@ -32,26 +32,8 @@ router.get("/movies", async (req, res) => {
           });
         });
       });
-    await axios
-      .get(
-        "https://api.themoviedb.org/3/movie/407890?api_key=9870a1126969deb4ef642d4b0c802de4&language=pt-BR"
-      )
-      .then(response => {
-        details = response.data;
-        console.log(details);
-
-        // details.forEach(movie => {
-        //   movies.push(movie.imdb);
-        // });
-      });
-    console.log("movie atualizado", movies);
 
     Movie.insertMany(movies);
-
-    console.log(data);
-
-    console.log(movies);
-
     res.status(200).json({ data });
   } catch (error) {
     console.log(error);

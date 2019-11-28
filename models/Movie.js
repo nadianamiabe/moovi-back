@@ -7,7 +7,6 @@ const movieSchema = new Schema(
     title: { type: String, required: true },
     original_title: String,
     tmdb_id: String,
-    omdb_id: String,
     original_languange: String,
     release_date: String,
     genre: String,
