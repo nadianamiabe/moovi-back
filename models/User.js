@@ -8,22 +8,13 @@ const UserSchema = new Schema(
     password: String,
     email: String,
     isSubscribed: { type: Boolean, default: false },
-    registrationData: {
-      cpf: Number,
-      city: String,
-      state: String,
-      country: String,
-      creditCard: {
-        number: Number,
-        name: String,
-        ccv: Number
-      },
-      planType: { type: String, enum: ["plan1", "plan2", "plan3"] }
-    }
+    subscriptionId: String,
+    customerId: String,
+    paymentMethodId: String,
   },
   {
-    timestamps: true
-  }
+    timestamps: true,
+  },
 );
 
 const User = mongoose.model("User", UserSchema);
