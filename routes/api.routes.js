@@ -1,7 +1,7 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const userRoutes = require("./userRoutes");
-const index = require("./index");
+const userRoutes = require("./user.routes");
+const index = require("./index.routes");
 
 const router = express.Router();
 
