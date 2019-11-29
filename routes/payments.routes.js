@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 const express = require('express');
 
 const router = express.Router();
@@ -24,19 +22,25 @@ router.post('/new/customer', async (req, res) => {
     });
     res.status(200).json({ message: 'Customer has been created' });
   } catch (err) {
-    res.status(400).json({message: 'Customer was not created', error: err.message });
+    res.status(400).json({ message: 'Customer was not created', error: err.message });
   }
 });
 
-router.post('/new/subscription', async(req, res) => {
-  const { user } = req;
-  if (!user.isSubscribed) {
-    try {
-      
-    } catch (error) {
-      
-    }
+router.post('/new/subscription', async (req, res) => {
+  const { _id, customerId } = req.user;
+  const { planId } = req.body;
+  try {
+    const subscription = await stripe.subscriptions.create({
+      customer: customerId,
+      items: [{ plan: planId }],
+      expand: ['latest_invoice.payment_intent'],
+    });
+    await User.findByIdAndUpdate(_id, { subscriptionId: subscription.id });
+
+    res.status(200).json({ message: 'Subscription has been created' });
+  } catch (err) {
+    res.status(400).json({ message: 'Subscription was not created', error: err.message })
   }
-})
+});
 
 module.exports = router;

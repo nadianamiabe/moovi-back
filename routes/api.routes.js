@@ -29,4 +29,8 @@ router.use(verifyLoggedAreaToken());
 
 router.use("/", index);
 
+const payments = require('../routes/payments.routes');
+
+router.use('/payments', payments);
+
 module.exports = router;
