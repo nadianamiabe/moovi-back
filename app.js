@@ -41,7 +41,7 @@ app.use(
 
 app.use(express.static(path.join(__dirname, "public")));
 
-const apiRoutes = require("./routes/apiRoutes");
+const apiRoutes = require("./routes/api.routes");
 
 app.use("/", apiRoutes);
 
