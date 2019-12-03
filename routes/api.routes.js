@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const userRoutes = require("./user.routes");
 const movies = require("./movies.routes");
+const places = require("./places.routes");
 
 const router = express.Router();
 
@@ -31,5 +32,7 @@ router.use("/users", userRoutes);
 router.use(verifyLoggedAreaToken());
 
 router.use("/movies", movies);
+
+router.use("/places", places);
 
 module.exports = router;
