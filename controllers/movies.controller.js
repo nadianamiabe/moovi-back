@@ -29,7 +29,7 @@ const getAllMovies = async (req, res) => {
       });
 
     Movie.insertMany(movies);
-    res.status(200).json({ movies });
+    res.status(200).json(movies);
   } catch (error) {
     console.log(error);
   }
