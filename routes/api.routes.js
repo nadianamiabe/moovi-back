@@ -2,8 +2,10 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 
 const userRoutes = require("./user.routes");
-const movies = require("./movies");
+
 const movieTheatersRoutes = require("./movieTheaters.routes");
+const movies = require("./movies.routes");
+
 
 const router = express.Router();
 
