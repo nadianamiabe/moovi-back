@@ -34,16 +34,13 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
-  })
+    origin: 'http://localhost:3000',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  }),
 );
 
-app.use(express.static(path.join(__dirname, "public")));
-// app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
+const apiRoutes = require('./routes/api.routes');
 
-const apiRoutes = require("./routes/apiRoutes");
-
-app.use("/", apiRoutes);
+app.use('/', apiRoutes);
 
 module.exports = app;
