@@ -2,8 +2,13 @@ const express = require('express');
 
 const router = express.Router();
 
-const showAlMovieTheaters = require('../controllers/movieTheaters.controller');
+const {
+  getAllPlaces,
+  getOnePlace,
+} = require('../controllers/movieTheaters.controller');
 
-router.get('/', showAlMovieTheaters);
+router.get('/all-places', getAllPlaces);
+
+router.get('/one-place/:id', getOnePlace);
 
 module.exports = router;

@@ -1,10 +1,10 @@
 const {
   placeInfo,
-  listOfMovieTheaters
+  listOfMovieTheaters,
 } = require('../helpers/googleMaps.helper');
 const MovieTheater = require('../models/MovieTheater');
 
-const showAllMoviesTheaters = async (req, res) => {
+const getAllPlaces = async (req, res) => {
   try {
     // await getGeoLocation();
     // await placeInfo();
@@ -31,7 +31,6 @@ const showAllMoviesTheaters = async (req, res) => {
       newTheater.phone_number = result.international_phone_number;
       newTheater.website = result.website;
       newTheater.location = result.geometry.location;
-      console.log('this is the theater: ', newTheater);
 
       if (!oneMovieTheater) {
         const newMovieTheater = new MovieTheater(newTheater);
@@ -52,16 +51,17 @@ function filterByName(movieTheaterData) {
     name.includes('playarte') ||
     name.includes('itau')
   ) {
-    console.log('entrou na callbackl filter', name);
     return true;
   }
   return false;
 }
 
-module.exports = showAllMoviesTheaters;
+const getOnePlace = async (req, res) => {
+  const onPlaceInfo = await MovieTheater.findById(req.params.id);
+  res.status(200).json({ message: onPlaceInfo });
+}
 
-/*
-  pegar os movieTheatersData e criar uma callback para o .filter() que pega o 
-  movieTheatersData.name e ve SE includes('cinemark') || includes('playarte') || includes('itau')
-  Os que retornarem TRUE vao ser uma nova variável ARRAY movieTheatersDataFiltered que vai salvar no banco de dado.
-*/
+module.exports = { 
+  getAllPlaces,
+  getOnePlace,
+};
