@@ -39,13 +39,8 @@ app.use(
   }),
 );
 
-app.use(express.static(path.join(__dirname, 'public')));
-
 const apiRoutes = require('./routes/api.routes');
 
-
 app.use('/api', apiRoutes);
-
-
 
 module.exports = app;

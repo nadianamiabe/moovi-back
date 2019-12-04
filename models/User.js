@@ -10,7 +10,6 @@ const UserSchema = new Schema(
     isSubscribed: { type: Boolean, default: false },
     subscriptionId: String,
     customerId: String,
-    paymentMethodId: String,
   },
   {
     timestamps: true,
