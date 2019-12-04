@@ -1,7 +1,11 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const userRoutes = require("./userRoutes");
-const index = require("./index");
+
+const userRoutes = require("./user.routes");
+
+const movieTheatersRoutes = require("./movieTheaters.routes");
+const movies = require("./movies.routes");
+
 
 const router = express.Router();
 
@@ -19,14 +23,18 @@ const verifyLoggedAreaToken = () => (req, res, next) => {
 
     next();
   } catch (error) {
+    console.log(error);
+
     res.status(401).json({ message: "Token expirado", status: 401 });
   }
 };
 
 router.use("/users", userRoutes);
 
+router.use('/movie-theater', movieTheatersRoutes);
 router.use(verifyLoggedAreaToken());
 
-router.use("/", index);
+router.use("/movies", movies);
+
 
 module.exports = router;
