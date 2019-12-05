@@ -22,10 +22,8 @@ const getGeoLocation = async () => {
 
 const placeInfo = async (id) => {
   try {
-    console.log('this is params id', id);
     const response = await googleMapsClient.place({ placeid: id })
       .asPromise();
-    console.log('this is response place INFORMATION:', response.json.result.website);
     return response.json;
   } catch (error) {
     console.log(error);
