@@ -2,10 +2,8 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const userRoutes = require('./user.routes');
 const index = require('./index.routes');
-const movieTheatersRoutes = require("./movieTheaters.routes");
-const movies = require("./movies.routes");
-
-
+const movieTheatersRoutes = require('./movieTheaters.routes');
+const movies = require('./movies.routes');
 
 const router = express.Router();
 
@@ -42,7 +40,7 @@ const payments = require('../routes/payments.routes');
 
 router.use('/payments', payments);
 router.use('/', index);
-router.use("/movies", movies);
+router.use('/movies', movies);
 
 
 module.exports = router;
