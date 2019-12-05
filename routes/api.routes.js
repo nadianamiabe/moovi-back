@@ -1,9 +1,18 @@
+<<<<<<< HEAD
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const userRoutes = require("./user.routes");
 const index = require("./index.routes");
 const movieTheatersRoutes = require("./movieTheaters.routes");
 const movies = require("./movies.routes");
+=======
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const userRoutes = require('./user.routes');
+const index = require('./index.routes');
+const movieTheatersRoutes = require('./movieTheaters.routes');
+const movies = require('./movies.routes');
+>>>>>>> 936fd64b291ebaf2c026e57849ec53f5fbb33387
 
 const router = express.Router();
 
@@ -48,7 +57,15 @@ router.use(verifyLoggedAreaToken());
 
 const payments = require("../routes/payments.routes");
 
+<<<<<<< HEAD
 router.use("/payments", payments);
 router.use("/movies", movies);
+=======
+const payments = require('../routes/payments.routes');
+
+router.use('/payments', payments);
+router.use('/', index);
+router.use('/movies', movies);
+>>>>>>> 936fd64b291ebaf2c026e57849ec53f5fbb33387
 
 module.exports = router;
