@@ -1,14 +1,15 @@
-const express = require("express");
+const express = require('express');
+
 const router = express.Router();
 
 const {
-  getAllMovies,
-  upcomingMovies,
-  getOneMovie
-} = require("../controllers/movies.controller");
+  getNowPlaying,
+  getMovieByName,
+  getDetail,
+} = require('../controllers/movies.controller');
 
-router.get("/all-movies", getAllMovies);
-router.get("/upcoming-movies", upcomingMovies);
-router.get("/:id", getOneMovie);
+router.get('/now-playing', getNowPlaying);
+router.get('/t', getMovieByName);
+router.get('/:id', getDetail);
 
 module.exports = router;
