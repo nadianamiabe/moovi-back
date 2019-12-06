@@ -8,13 +8,13 @@ const movies = require('./movies.routes');
 const router = express.Router();
 
 const verifyLoggedAreaToken = () => (req, res, next) => {
-  const authHeader = req.header("Authorization");
+  const authHeader = req.header('Authorization');
 
   if (!authHeader) {
-    res.status(401).json({ message: "Token não enviado" });
+    res.status(401).json({ message: 'Token não enviado' });
     return;
   }
-  const token = authHeader.split(" ")[1];
+  const token = authHeader.split(' ')[1];
 
   try {
     const tokenInfo = jwt.verify(token, process.env.token);
@@ -35,19 +35,22 @@ const verifyLoggedAreaToken = () => (req, res, next) => {
 
     next();
   } catch (error) {
-    res.status(401).json({ message: "Token expirado", status: 401 });
+    res.status(401).json({ message: 'Token expirado', status: 401 });
     console.log(error);
   }
 };
 
-router.use("/", index);
-router.use("/users", userRoutes);
+router.use('/', index);
+router.use('/users', userRoutes);
 
-router.use("/movie-theater", movieTheatersRoutes);
+router.use('/movie-theater', movieTheatersRoutes);
 router.use(verifyLoggedAreaToken());
 
+<<<<<<< HEAD
 const payments = require("../routes/payments.routes");
 
+=======
+>>>>>>> 4ab8b14c2740619e69775c6155a1d20dfa938275
 const payments = require('../routes/payments.routes');
 
 router.use('/payments', payments);
