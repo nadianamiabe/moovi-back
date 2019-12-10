@@ -23,14 +23,14 @@ const verifyLoggedAreaToken = () => (req, res, next) => {
       id,
       isSubscribed,
       customerId,
-      subscriptionId
+      subscriptionId,
     } = tokenInfo;
     req.user = {
       username,
       id,
       isSubscribed,
       customerId,
-      subscriptionId
+      subscriptionId,
     };
 
     next();
@@ -46,11 +46,6 @@ router.use('/users', userRoutes);
 router.use('/movie-theater', movieTheatersRoutes);
 router.use(verifyLoggedAreaToken());
 
-<<<<<<< HEAD
-const payments = require("../routes/payments.routes");
-
-=======
->>>>>>> 4ab8b14c2740619e69775c6155a1d20dfa938275
 const payments = require('../routes/payments.routes');
 
 router.use('/payments', payments);
