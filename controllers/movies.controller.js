@@ -15,18 +15,36 @@ const filterTmdbResults = (arr) => arr.map((movie) => ({
   release_date: movie.release_date,
 }));
 
-const getNowPlaying = async (req, res) => {
+const getAllPlayingMovies = async (url, page, movies) => {
   const config = {
     params: {
       api_key: process.env.TMDB_KEY,
       language: 'pt-BR',
       region: 'US',
+      page,
     },
   };
   try {
-    const request = await axios.get(`${tmdbBaseUrl}movie/now_playing`, config);
-    const movies = filterTmdbResults(request.data.results);
-    res.status(200).json({ movies });
+    const request = await axios.get(url, config);
+    const allMovies = movies.concat(request.data.results);
+    const { total_pages } = request.data;
+    if (request.data.page < total_pages) {
+      console.log('entrou aqui');
+      return getAllPlayingMovies(url, page + 1, allMovies);
+    }
+    return allMovies;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+const getNowPlaying = async (req, res) => {
+  try {
+    let allMovies = await getAllPlayingMovies(`${tmdbBaseUrl}movie/now_playing`, 1, []);
+    allMovies = allMovies.filter((movie) => movie.overview.length > 0);
+    const result = filterTmdbResults(allMovies);
+    res.status(200).json({ result });
   } catch (error) {
     console.log(error);
     res.status(400).json({ message: 'Unable to get movies', error: error.message });

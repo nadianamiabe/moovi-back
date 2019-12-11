@@ -3,11 +3,12 @@ const User = require('../models/User');
 
 const createCustomer = async (req, res) => {
   const { user } = req;
-  const { payment_method } = req.body;
+  const { name, email, payment_method } = req.body;
   try {
     const customer = await stripe.customers.create({
       payment_method,
-      email: user.email,
+      email,
+      name,
       invoice_settings: {
         default_payment_method: payment_method,
       },
@@ -25,11 +26,13 @@ const createCustomer = async (req, res) => {
 };
 
 const createSubscription = async (req, res) => {
-  const { id, customerId } = req.user;
+  const { id } = req.user;
   const { planId } = req.body;
+
   try {
+    const loggedUser = await User.findById(id);
     const subscription = await stripe.subscriptions.create({
-      customer: customerId,
+      customer: loggedUser.customerId,
       items: [{ plan: planId }],
       expand: ['latest_invoice.payment_intent'],
     });
