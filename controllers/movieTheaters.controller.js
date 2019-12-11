@@ -38,7 +38,8 @@ const getAllPlaces = async (req, res) => {
       }
     });
 
-    res.status(200).json({ message: 'dasdadasdasdasdasd' });
+    const MovieTheaterDB = await MovieTheater.find();
+    res.json(MovieTheaterDB);
   } catch (err) {
     console.log(err);
   }
@@ -58,7 +59,7 @@ function filterByName(movieTheaterData) {
 
 const getOnePlace = async (req, res) => {
   const onPlaceInfo = await MovieTheater.findById(req.params.id);
-  res.status(200).json({ message: onPlaceInfo });
+  res.status(200).json(onPlaceInfo);
 }
 
 module.exports = { 
