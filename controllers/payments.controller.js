@@ -3,11 +3,12 @@ const User = require('../models/User');
 
 const createCustomer = async (req, res) => {
   const { user } = req;
-  const { payment_method } = req.body;
+  const { name, email, payment_method } = req.body;
   try {
     const customer = await stripe.customers.create({
       payment_method,
-      email: user.email,
+      email,
+      name,
       invoice_settings: {
         default_payment_method: payment_method,
       },
