@@ -46,7 +46,24 @@ const createSubscription = async (req, res) => {
   }
 };
 
+const getStripeData = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const user = await User.findById(id);
+    if (user.isSubscribed) {
+      const { customerId, subscriptionId } = user;
+      const customer = await stripe.custome.retrieve(customerId);
+      const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+      res.status(200).json({ customer, subscription });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({ message: 'Unable to find user data', error: error.message });
+  }
+};
+
 module.exports = {
   createCustomer,
   createSubscription,
+  getStripeData,
 };
