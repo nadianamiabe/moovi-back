@@ -84,7 +84,7 @@ const getDetail = async (req, res) => {
     const { imdb_id } = tmdbDetail.data;
     const request = await axios.get(`http://omdbapi.com/?apikey=${process.env.OMDB_KEY}&i=${imdb_id}`);
     if (request.data.Response === 'True') {
-      res.status(200).json(request.data);
+      res.status(200).json({ tmdbDetail: tmdbDetail.data, omdbDetail: request.data });
     } else {
       res.status(400).json({ message: 'Unable to get movie detail', error: request.data.Error });
     }
