@@ -7,18 +7,18 @@ const googleMapsClient = require('@google/maps').createClient({
 
 // Geocode an address.
 
-let placeID = '';
+// let placeID = '';
 
-const getGeoLocation = async () => {
-  try {
-    const response = await googleMapsClient.geocode({ address: 'Alameda Jaú, 1301 - Jardim Paulista, São Paulo - SP, 01420-001' })
-      .asPromise();
-    // console.log('this is response place ID:', response.json.results[0].place_id);
-    placeID = response.json.results[0].place_id;
-  } catch (error) {
-    console.log(error);
-  }
-};
+// const getGeoLocation = async () => {
+//   try {
+//     const response = await googleMapsClient.geocode({ address: 'Alameda Jaú, 1301 - Jardim Paulista, São Paulo - SP, 01420-001' })
+//       .asPromise();
+//     // console.log('this is response place ID:', response.json.results[0].place_id);
+//     placeID = response.json.results[0].place_id;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 const placeInfo = async (id) => {
   try {
@@ -44,18 +44,18 @@ const getShoppingFromAddress = async (address) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 
-const listOfMovieTheaters = async () => {
+const listOfMovieTheaters = async (lat, lng) => {
   try {
     const response = await googleMapsClient
       .placesNearby({
         keyword: 'Cinemark',
         type: 'movie_theater',
         location: {
-          lat: '-23.56165000482843',
-          lng: '-46.66010253294923',
+          lat,
+          lng,
         },
         radius: 5000,
       })
@@ -68,7 +68,6 @@ const listOfMovieTheaters = async () => {
 };
 
 module.exports = {
-  getGeoLocation,
   placeInfo,
   listOfMovieTheaters,
   getShoppingFromAddress,

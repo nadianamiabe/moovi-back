@@ -7,8 +7,8 @@ const {
   getOnePlace,
 } = require('../controllers/movieTheaters.controller');
 
+router.get('/all-places/lat/:lat/lng/:lng', getAllPlaces);
 
-router.get('/all-places', getAllPlaces);
 
 router.get('/one-place/:id', getOnePlace);
 
