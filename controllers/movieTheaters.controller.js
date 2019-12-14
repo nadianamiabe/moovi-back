@@ -6,10 +6,9 @@ const {
 const MovieTheater = require('../models/MovieTheater');
 
 const getAllPlaces = async (req, res) => {
+  const { lat, lng } = req.params;
   try {
-    // await getGeoLocation();
-    // await placeInfo();
-    const allMovieTheaters = await listOfMovieTheaters();
+    const allMovieTheaters = await listOfMovieTheaters(lat, lng);
 
     const movieTheatersDataFiltered = allMovieTheaters
       .map((place) => ({
@@ -39,10 +38,8 @@ const getAllPlaces = async (req, res) => {
         const names = newTheater.name.split(' ');
         if (names.length < 2) {
           const shopping = await getShoppingFromAddress(newTheater.address);
-          console.log(shopping);
           names.push(shopping);
           newTheater.name = names.join(' ');
-          console.log(newTheater);
         }
         const newMovieTheater = new MovieTheater(newTheater);
         await newMovieTheater.save();
