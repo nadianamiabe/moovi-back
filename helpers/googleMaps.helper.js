@@ -30,15 +30,34 @@ const placeInfo = async (id) => {
   }
 };
 
+const getShoppingFromAddress = async (address) => {
+  try {
+    const response = await googleMapsClient
+      .findPlace({
+        input: `shopping ${address}`,
+        inputtype: ['textquery'],
+        fields: ['name'],
+      })
+      .asPromise();
+    console.log(response.json.candidates);
+    return response.json.candidates[0].name;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
 const listOfMovieTheaters = async () => {
   try {
     const response = await googleMapsClient
-      .places({
+      .placesNearby({
+        keyword: 'Cinemark',
         type: 'movie_theater',
         location: {
           lat: '-23.56165000482843',
           lng: '-46.66010253294923',
         },
+        radius: 5000,
       })
       .asPromise();
     return response.json.results;
@@ -52,4 +71,5 @@ module.exports = {
   getGeoLocation,
   placeInfo,
   listOfMovieTheaters,
+  getShoppingFromAddress,
 };
