@@ -1,6 +1,7 @@
 const {
   placeInfo,
   listOfMovieTheaters,
+  getShoppingFromAddress,
 } = require('../helpers/googleMaps.helper');
 const MovieTheater = require('../models/MovieTheater');
 
@@ -11,10 +12,10 @@ const getAllPlaces = async (req, res) => {
     const allMovieTheaters = await listOfMovieTheaters();
 
     const movieTheatersDataFiltered = allMovieTheaters
-      .map((place, idx) => ({
+      .map((place) => ({
         name: place.name,
-        address: place.formatted_address,
-        place_id: place.place_id
+        address: place.vicinity,
+        place_id: place.place_id,
       }))
       .filter(filterByName);
 
@@ -23,6 +24,7 @@ const getAllPlaces = async (req, res) => {
 
     movieTheatersDataFiltered.forEach(async (theater) => {
       const newTheater = { ...theater };
+
       const oneMovieTheater = await MovieTheater.findOne({
         place_id: theater.place_id,
       });
@@ -32,7 +34,16 @@ const getAllPlaces = async (req, res) => {
       newTheater.website = result.website;
       newTheater.location = result.geometry.location;
 
+
       if (!oneMovieTheater) {
+        const names = newTheater.name.split(' ');
+        if (names.length < 2) {
+          const shopping = await getShoppingFromAddress(newTheater.address);
+          console.log(shopping);
+          names.push(shopping);
+          newTheater.name = names.join(' ');
+          console.log(newTheater);
+        }
         const newMovieTheater = new MovieTheater(newTheater);
         await newMovieTheater.save();
       }
@@ -48,9 +59,7 @@ const getAllPlaces = async (req, res) => {
 function filterByName(movieTheaterData) {
   const name = movieTheaterData.name.toLowerCase();
   if (
-    name.includes('cinemark') ||
-    name.includes('playarte') ||
-    name.includes('itau')
+    name.includes('cinemark')
   ) {
     return true;
   }
@@ -60,7 +69,9 @@ function filterByName(movieTheaterData) {
 const getOnePlace = async (req, res) => {
   const onPlaceInfo = await MovieTheater.findById(req.params.id);
   res.status(200).json(onPlaceInfo);
-}
+};
+
+
 
 module.exports = { 
   getAllPlaces,

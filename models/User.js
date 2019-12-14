@@ -10,6 +10,8 @@ const UserSchema = new Schema(
     isSubscribed: { type: Boolean, default: false },
     subscriptionId: String,
     customerId: String,
+    maxTickets: Number,
+    usedTickets: Number,
   },
   {
     timestamps: true,
