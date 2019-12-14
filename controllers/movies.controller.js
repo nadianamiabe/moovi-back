@@ -1,5 +1,5 @@
 const axios = require('axios');
-
+const Movie = require('../models/Movie');
 const tmdbBaseUrl = 'https://api.themoviedb.org/3/';
 
 const filterTmdbResults = (arr) => arr.map((movie) => ({
@@ -53,7 +53,6 @@ const getNowPlaying = async (req, res) => {
 
 const getMovieByName = async (req, res) => {
   const { title } = req.query;
-  console.log(title);
   const date = new Date();
   const year = date.getFullYear();
   const config = {
@@ -93,9 +92,19 @@ const getDetail = async (req, res) => {
   }
 };
 
+const saveMovie = async (req, res) => {
+  const { movie } = req.body;
+  try {
+    await Movie.create(movie);
+    res.status(200).json({ message: 'Movie was saved to database.' });
+  } catch (error) {
+    res.status(400).json({ message: 'Movie was not saved to database.', error: error.message });
+  }
+};
 
 module.exports = {
   getNowPlaying,
   getMovieByName,
   getDetail,
+  saveMovie,
 };
