@@ -9,7 +9,7 @@ const path = require('path');
 const cors = require('cors');
 
 mongoose
-  .connect(process.env.ATLAS_URI, { useNewUrlParser: true })
+  .connect(process.env.MONGOATLAS_URI, { useNewUrlParser: true })
   .then((x) => {
     console.log(
       `Connected to Mongo! Database name: "${x.connections[0].name}"`,

@@ -9,6 +9,7 @@ const {
 
 router.get('/all-places/lat/:lat/lng/:lng', getAllPlaces);
 
+
 router.get('/one-place/:id', getOnePlace);
 
 module.exports = router;

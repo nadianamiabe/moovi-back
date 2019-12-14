@@ -38,8 +38,11 @@ const getAllPlaces = async (req, res) => {
         const names = newTheater.name.split(' ');
         if (names.length < 2) {
           const shopping = await getShoppingFromAddress(newTheater.address);
-          names.push(shopping);
-          newTheater.name = names.join(' ');
+
+          if (shopping) {
+            names.push(shopping);
+            newTheater.name = names.join(' ');
+          }
         }
         const newMovieTheater = new MovieTheater(newTheater);
         await newMovieTheater.save();
@@ -68,9 +71,7 @@ const getOnePlace = async (req, res) => {
   res.status(200).json(onPlaceInfo);
 };
 
-
-
-module.exports = { 
+module.exports = {
   getAllPlaces,
   getOnePlace,
 };
