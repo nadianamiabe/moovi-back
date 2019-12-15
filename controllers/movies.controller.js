@@ -1,5 +1,7 @@
 const axios = require('axios');
 const Movie = require('../models/Movie');
+const Session = require('../models/Session');
+
 const tmdbBaseUrl = 'https://api.themoviedb.org/3/';
 
 const filterTmdbResults = (arr) => arr.map((movie) => ({
@@ -20,7 +22,7 @@ const getAllPlayingMovies = async (url, page, movies) => {
     params: {
       api_key: process.env.TMDB_KEY,
       language: 'pt-BR',
-      region: 'US',
+      region: 'BR',
       page,
     },
   };
@@ -29,7 +31,6 @@ const getAllPlayingMovies = async (url, page, movies) => {
     const allMovies = movies.concat(request.data.results);
     const { total_pages } = request.data;
     if (request.data.page < total_pages) {
-      console.log('entrou aqui');
       return getAllPlayingMovies(url, page + 1, allMovies);
     }
     return allMovies;
@@ -39,20 +40,19 @@ const getAllPlayingMovies = async (url, page, movies) => {
   }
 };
 
-const getNowPlaying = async (req, res) => {
-  try {
-    let allMovies = await getAllPlayingMovies(`${tmdbBaseUrl}movie/now_playing`, 1, []);
-    allMovies = allMovies.filter((movie) => movie.overview.length > 0);
-    const result = filterTmdbResults(allMovies);
-    res.status(200).json({ result });
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({ message: 'Unable to get movies', error: error.message });
-  }
-};
+// const getNowPlaying = async (req, res) => {
+//   try {
+//     let allMovies = await getAllPlayingMovies(`${tmdbBaseUrl}movie/now_playing`, 1, []);
+//     allMovies = allMovies.filter((movie) => (movie.overview.length > 0 && movie.poster_path !== null));
+//     const result = filterTmdbResults(allMovies);
+//     res.status(200).json({ result });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(400).json({ message: 'Unable to get movies', error: error.message });
+//   }
+// };
 
-const getMovieByName = async (req, res) => {
-  const { title } = req.query;
+const getMovieByName = async (name) => {
   const date = new Date();
   const year = date.getFullYear();
   const config = {
@@ -60,18 +60,15 @@ const getMovieByName = async (req, res) => {
       api_key: process.env.TMDB_KEY,
       language: 'pt-BR',
       region: 'BR',
-      query: title,
+      query: name,
     },
   };
   try {
     const request = await axios.get(`${tmdbBaseUrl}search/movie`, config);
-
-    let movies = filterTmdbResults(request.data.results);
-    movies = movies.filter((movie) => movie.release_date.slice(0, 4) >= year - 1);
-
-    res.status(200).json(movies.sort((a, b) => b.release_date - a.release_date)[0]);
+    const movies = request.data.results.filter((movie) => movie.release_date.slice(0, 4) >= year - 1);
+    return movies;
   } catch (error) {
-    res.status(400).json({ message: 'Unable to get movies', error: error.message });
+    return error;
   }
 };
 
@@ -102,9 +99,37 @@ const saveMovie = async (req, res) => {
   }
 };
 
+const getMoviesFromSessions = async (req, res) => {
+  try {
+    const movieNames = await Session.distinct('movie');
+    const allMovies = await getAllPlayingMovies(`${tmdbBaseUrl}movie/now_playing`, 1, []);
+    const allNames = allMovies.map((el) => el.title);
+    const promises = movieNames.map(async (name) => {
+      const index = allNames.indexOf(name);
+      if (index === -1) {
+        const movies = await getMovieByName(name);
+        if (movies.length < 2) {
+          return movies[0];
+        }
+        const filtered = movies.filter((movie) => (movie.title === name));
+        if (filtered.length > 0) {
+          return filtered[0];
+        }
+        return movies[0];
+      }
+      return allMovies[index];
+    });
+    let response = await Promise.all(promises);
+    response = filterTmdbResults(response.filter((el) => el));
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(400).json(error);
+    console.log(error);
+  }
+};
+
 module.exports = {
-  getNowPlaying,
-  getMovieByName,
+  getMoviesFromSessions,
   getDetail,
   saveMovie,
 };
