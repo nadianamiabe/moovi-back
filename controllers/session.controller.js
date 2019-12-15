@@ -7,12 +7,13 @@ const clean = (word) => {
 
 
 const getMovieSessions = async (req, res) => {
-  const { id } = req.params;
+  const { id, city } = req.params
+  
 
   try {
     const cinema = await MovieTeather.findById(id);
     const words = cinema.name.split(' ').filter((word) => (word !== 'Cinemark' && word !== 'Shopping'));
-    const sessions = await Session.find({ cinema: { $regex: clean(words.join(' ')), $options: 'i' } });
+    const sessions = await Session.find({ city, cinema: { $regex: clean(words.join(' ')), $options: 'i' } });
     if (sessions) {
       res.status(200).json(sessions);
     }

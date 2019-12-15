@@ -4,7 +4,7 @@ const router = express.Router();
 
 const { getMovieSessions } = require('../controllers/session.controller.js');
 
-router.get('/:id', getMovieSessions);
+router.get('/:id/:city', getMovieSessions);
 
 module.exports = router;
 
