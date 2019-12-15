@@ -1,14 +1,19 @@
 const {
+  getGeoLocation,
   placeInfo,
   listOfMovieTheaters,
   getShoppingFromAddress,
 } = require('../helpers/googleMaps.helper');
 const MovieTheater = require('../models/MovieTheater');
 
+
+
 const getAllPlaces = async (req, res) => {
   const { lat, lng } = req.params;
   try {
     const allMovieTheaters = await listOfMovieTheaters(lat, lng);
+    const myCity = await getGeoLocation(lat, lng);
+    console.log(myCity);
 
     const movieTheatersDataFiltered = allMovieTheaters
       .map((place) => ({
@@ -50,7 +55,7 @@ const getAllPlaces = async (req, res) => {
     });
 
     const MovieTheaterDB = await MovieTheater.find();
-    res.json(MovieTheaterDB);
+    res.json({ allPlacesDB: MovieTheaterDB, userCity: myCity });
   } catch (err) {
     console.log(err);
   }
