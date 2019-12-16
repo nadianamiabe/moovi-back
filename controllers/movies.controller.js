@@ -1,8 +1,10 @@
-const axios = require("axios");
-const Movie = require("../models/Movie");
-const Session = require("../models/Session");
+const axios = require('axios');
+const { google } = require('googleapis');
+const Movie = require('../models/Movie');
+const Session = require('../models/Session');
 
-const tmdbBaseUrl = "https://api.themoviedb.org/3/";
+
+const tmdbBaseUrl = 'https://api.themoviedb.org/3/';
 
 const filterTmdbResults = arr =>
   arr.map(movie => ({
@@ -17,6 +19,27 @@ const filterTmdbResults = arr =>
     overview: movie.overview,
     release_date: movie.release_date
   }));
+
+const getMovieTrailer = async (req, res) => {
+  try {
+    const { title , language } = req.query;
+    const youtube = google.youtube({
+      version: 'v3',
+      auth: process.env.GOOGLE_API_KEY,
+    });
+    const response = await youtube.search.list({
+      part: 'snippet',
+      q: `${title} trailer`,
+      type: 'video',
+      videoDuration: 'short',
+      regionCode: 'BR',
+      relevanceLanguage: language,
+    });
+    res.status(200).json(response.data.items[0]);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+};
 
 const getAllPlayingMovies = async (url, page, movies) => {
   const config = {
@@ -95,6 +118,7 @@ const getDetail = async (req, res) => {
         message: "Unable to get movie detail",
         error: request.data.Error
       });
+      res.status(200).json({ tmdbDetail: tmdbDetail.data });
     }
   } catch (error) {
     res
@@ -155,5 +179,10 @@ const getMoviesFromSessions = async (req, res) => {
 module.exports = {
   getMoviesFromSessions,
   getDetail,
+<<<<<<< HEAD
   saveMovie
+=======
+  saveMovie,
+  getMovieTrailer,
+>>>>>>> a5957f0bb8ed4c715d33b869c8725dcce4ee14ea
 };
