@@ -179,10 +179,6 @@ const getMoviesFromSessions = async (req, res) => {
 module.exports = {
   getMoviesFromSessions,
   getDetail,
-<<<<<<< HEAD
-  saveMovie
-=======
   saveMovie,
   getMovieTrailer,
->>>>>>> a5957f0bb8ed4c715d33b869c8725dcce4ee14ea
 };
