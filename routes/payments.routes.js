@@ -5,6 +5,7 @@ const {
   createCustomer,
   createSubscription,
   getStripeData,
+  getUserStatus,
 } = require('../controllers/payments.controller.js');
 
 
@@ -17,5 +18,7 @@ router.post('/customer', createCustomer);
 router.post('/subscription', createSubscription);
 
 router.get('/data', getStripeData);
+
+router.get('/status', getUserStatus);
 
 module.exports = router;

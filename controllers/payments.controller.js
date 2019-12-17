@@ -46,6 +46,17 @@ const createSubscription = async (req, res) => {
   }
 };
 
+const getUserStatus = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const user = await User.findById(id);
+    console.log(user);
+    res.status(200).json({ status: user.isSubscribed });
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+};
+
 const getStripeData = async (req, res) => {
   try {
     const { id } = req.user;
@@ -66,4 +77,5 @@ module.exports = {
   createCustomer,
   createSubscription,
   getStripeData,
+  getUserStatus,
 };

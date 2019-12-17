@@ -3,9 +3,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const sessionSchema = new Schema({
-  cinema: { type: String , require: true },
-  date: { type: String, required: true },
   movie: { type: String, required: true },
+  cinema: { type: String , required: true },
+  date: { type: String, required: true },
+  movie_id: { type: Schema.Types.ObjectId, ref: 'Movie' },
   times: [{ type: String, required: true }],
   room: String,
   dubbed: Boolean,
