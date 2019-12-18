@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const User = require('../models/User');
 
 const loginUser = async (req, res) => {
@@ -27,7 +26,7 @@ const loginUser = async (req, res) => {
       isSubscribed: user.isSubscribed,
       customerId: user.customerId,
       subscriptionId: user.subscriptionId,
-    }, process.env.token, { algorithm: 'HS256', expiresIn: '2h' });
+    }, process.env.token, { algorithm: 'HS256', expiresIn: '500h' });
 
     res.status(200).json({ token });
   } catch (error) {
