@@ -24,6 +24,7 @@ const debug = require('debug')(
   `${app_name}:${path.basename(__filename).split('.')[0]}`,
 );
 
+
 const app = express();
 
 // Middleware Setup
@@ -39,8 +40,13 @@ app.use(
   }),
 );
 
+
 const apiRoutes = require('./routes/api.routes');
 
 app.use('/api', apiRoutes);
+
+app.use((req, res, next) => {
+  res.sendFile(__dirname + 'public/index.html');
+});
 
 module.exports = app;
