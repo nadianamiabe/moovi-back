@@ -2,10 +2,14 @@
   "name": "moovi-back",
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": "12.4.0"
+  },
   "scripts": {
-    "start": "node ./bin/www",
-    "dev": "DEBUG=moovi-back:* nodemon ./bin/www",
-    "dev-windows": "nodemon ./bin/www"
+    "start": "node app.js",
+    "server": "node app.js",
+    "dev": "DEBUG=moovi-back:* nodemon app.js",
+    "dev-windows": "nodemon app.js"
   },
   "dependencies": {
     "@google/maps": "^1.0.2",

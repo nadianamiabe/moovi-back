@@ -12,15 +12,20 @@ const getMovieSessions = async (req, res) => {
 
   try {
     const cinema = await MovieTeather.findById(id);
-    const words = cinema.name.split(' ').filter((word) => (word !== 'Cinemark' && word !== 'Shopping'));
-    const sessions = await Session.find({ city: city.toLowerCase(), cinema: { $regex: clean(words.join(' ')), $options: 'i' } });
+    const words = cinema.name.replace(/Cinemark\s|Shopping\s/g, '').split(' ');
+    console.log(words);
+    const regex = words.reduce((acc, value) => {
+      return acc + '|' + value;
+    });
+
+    const sessions = await Session.find({ city: city.toLowerCase(), cinema: { $regex: clean(regex), $options: 'i' } });
+    console.log(sessions);
     if (sessions) {
       res.status(200).json(sessions);
     }
-    res.status(400).json({ message: 'Cannot find sessions' });
   } catch (error) {
     console.log(error);
-    res.status(400).json(error);
+    res.status(400).json({ message: error.message });
   }
 };
 

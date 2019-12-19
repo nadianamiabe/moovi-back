@@ -13,9 +13,13 @@ const getGeoLocation = async (lat, lng) => {
   try {
     const response = await googleMapsClient.reverseGeocode({ latlng: [lat, lng] })
       .asPromise();
-    console.log('this is response place ID:', response.json.results[0].address_components[4].long_name);
+    const city = response.json.results[0].address_components.filter((component) => {
+      console.log(component);
+      return (component.types[0] === 'administrative_area_level_2');
+    });
+    console.log('this is response place ID:', city[0].long_name);
     // placeID = response.json.results[0].place_id;
-    return response.json.results[0].address_components[4].long_name;
+    return city[0].long_name;
   } catch (error) {
     console.log(error);
   }
