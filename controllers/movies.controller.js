@@ -1,37 +1,36 @@
-const axios = require("axios");
-const { google } = require("googleapis");
-const Movie = require("../models/Movie");
-const Session = require("../models/Session");
+const axios = require('axios');
+const { google } = require('googleapis');
+const Movie = require('../models/Movie');
+const Session = require('../models/Session');
 
-const tmdbBaseUrl = "https://api.themoviedb.org/3/";
+const tmdbBaseUrl = 'https://api.themoviedb.org/3/';
 
-const filterTmdbResults = arr =>
-  arr.map(movie => ({
-    title: movie.title,
-    original_title: movie.original_title,
-    original_language: movie.original_language,
-    tmdb_id: movie.id,
-    poster_urls: [
-      `https://image.tmdb.org/t/p/w154${movie.poster_path}`,
-      `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-    ],
-    overview: movie.overview,
-    release_date: movie.release_date
-  }));
+const filterTmdbResults = (arr) => arr.map((movie) => ({
+  title: movie.title,
+  original_title: movie.original_title,
+  original_language: movie.original_language,
+  tmdb_id: movie.id,
+  poster_urls: [
+    `https://image.tmdb.org/t/p/w154${movie.poster_path}`,
+    `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+  ],
+  overview: movie.overview,
+  release_date: movie.release_date,
+}));
 
 const getMovieTrailer = async (req, res) => {
   try {
     const { title, language } = req.query;
     const youtube = google.youtube({
-      version: "v3",
+      version: 'v3',
       auth: process.env.GOOGLE_API_KEY
     });
     const response = await youtube.search.list({
-      part: "snippet",
+      part: 'snippet',
       q: `${title} trailer`,
-      type: "video",
-      videoDuration: "short",
-      regionCode: "BR",
+      type: 'video',
+      videoDuration: 'short',
+      regionCode: 'BR',
       relevanceLanguage: language
     });
     res.status(200).json(response.data.items[0]);
@@ -44,10 +43,10 @@ const getAllPlayingMovies = async (url, page, movies) => {
   const config = {
     params: {
       api_key: process.env.TMDB_KEY,
-      language: "pt-BR",
-      region: "BR",
-      page
-    }
+      language: 'pt-BR',
+      region: 'BR',
+      page,
+    },
   };
   try {
     const request = await axios.get(url, config);
@@ -75,22 +74,23 @@ const getAllPlayingMovies = async (url, page, movies) => {
 //   }
 // };
 
-const getMovieByName = async name => {
+const getMovieByName = async (name) => {
   const date = new Date();
   const year = date.getFullYear();
   const config = {
     params: {
       api_key: process.env.TMDB_KEY,
-      language: "pt-BR",
-      region: "BR",
-      query: name
-    }
+      language: 'pt-BR',
+      region: 'BR',
+      query: name,
+    },
   };
   try {
     const request = await axios.get(`${tmdbBaseUrl}search/movie`, config);
-    const movies = request.data.results.filter(
-      movie => movie.release_date.slice(0, 4) >= year - 1
-    );
+    const movies = request.data.results;
+    if (movies.length > 1) {
+      return movies.filter((movie) => movie.release_date && movie.release_date.slice(0, 4) >= year - 1);
+    }
     return movies;
   } catch (error) {
     return error;
@@ -104,13 +104,13 @@ const getDetail = async (req, res) => {
   console.log(movie);
   try {
     const tmdbDetail = await axios.get(`${tmdbBaseUrl}movie/${movie.tmdb_id}`, {
-      params: { api_key: process.env.TMDB_KEY, language: "pt-BR", region: "BR" }
+      params: { api_key: process.env.TMDB_KEY, language: 'pt-BR', region: 'BR' }
     });
     const { imdb_id } = tmdbDetail.data;
     const request = await axios.get(
       `http://omdbapi.com/?apikey=${process.env.OMDB_KEY}&i=${imdb_id}`
     );
-    if (request.data.Response === "True") {
+    if (request.data.Response === 'True') {
       res.status(200).json({ movie, omdbDetail: request.data });
     } else {
       res.status(200).json({ movie });
@@ -118,11 +118,11 @@ const getDetail = async (req, res) => {
   } catch (error) {
     res
       .status(400)
-      .json({ message: "Unable to get movie detail", error: error.message });
+      .json({ message: 'Unable to get movie detail', error: error.message });
   }
 };
 
-const deleteAndSaveMovies = async movies => {
+const deleteAndSaveMovies = async (movies) => {
   try {
     await Movie.deleteMany({});
     const newMovies = await Movie.create(movies);
@@ -132,22 +132,19 @@ const deleteAndSaveMovies = async movies => {
   }
 };
 
-const getMoviesFromNameList = async list => {
+const getMoviesFromNameList = async (list) => {
   try {
-    const allMovies = await getAllPlayingMovies(
-      `${tmdbBaseUrl}movie/now_playing`,
-      1,
-      []
-    );
-    const allNames = allMovies.map(el => el.title);
-    const promises = list.map(async name => {
+    const allMovies = await getAllPlayingMovies(`${tmdbBaseUrl}movie/now_playing`, 1, []);
+    const allNames = allMovies.map((el) => el.title);
+    const promises = list.map(async (name) => {
       const index = allNames.indexOf(name);
       if (index === -1) {
         const movies = await getMovieByName(name);
+        console.log(movies);
         if (movies.length < 2) {
           return movies[0];
         }
-        const filtered = movies.filter(movie => movie.title === name);
+        const filtered = movies.filter((movie) => movie.title === name);
         if (filtered.length > 0) {
           return filtered[0];
         }
@@ -156,7 +153,7 @@ const getMoviesFromNameList = async list => {
       return allMovies[index];
     });
     const response = await Promise.all(promises);
-    return filterTmdbResults(response.filter(el => el));
+    return filterTmdbResults(response.filter((el) => el));
   } catch (error) {
     return error;
   }
@@ -165,15 +162,14 @@ const getMoviesFromNameList = async list => {
 const getMovies = async (req, res) => {
   try {
     const moviesSaved = await Movie.find().limit(1);
-    console.log(moviesSaved);
     if (moviesSaved.length > 0) {
       const all = await Movie.find();
       res.status(200).json(all);
     } else {
-      const list = await Session.distinct("movie_name");
+      const list = await Session.distinct('movie_name');
       const movies = await getMoviesFromNameList(list);
+      console.log(movies);
       const saved = await deleteAndSaveMovies(movies);
-      console.log(saved);
       if (saved) {
         res.status(200).json(saved);
       }
@@ -186,5 +182,5 @@ const getMovies = async (req, res) => {
 module.exports = {
   getMovies,
   getDetail,
-  getMovieTrailer
+  getMovieTrailer,
 };

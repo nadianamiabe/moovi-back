@@ -32,10 +32,13 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+const whitelist = ['https://localhost:8080', 'https://moovi-258819.appspot.com', 'http://localhost:3000'];
 
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: whitelist,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   }),
 );
@@ -45,8 +48,11 @@ const apiRoutes = require('./routes/api.routes');
 
 app.use('/api', apiRoutes);
 
-app.use((req, res, next) => {
-  res.sendFile(path.join(__dirname, 'public/index.html'));
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/build/index.html'));
 });
 
+app.listen(8080, () => {
+  console.log('Express server running on port 8080');
+});
 module.exports = app;
